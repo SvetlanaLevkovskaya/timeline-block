@@ -23,9 +23,10 @@
 }
 
 .circleWrapper {
+  outline: 2px solid blue;
   position: relative;
-  width: 770px;
-  height: 770px;
+  width: 670px;
+  height: 670px;
   margin: 0 auto;
   transform: translateY(-180px);
 }
@@ -107,6 +108,7 @@
 
 .svgTitle {
   pointer-events: none;
+  font-weight: 700;
 }
 
 text {
@@ -160,9 +162,6 @@ text {
 
 .sliderArrow svg {
   display: block;
-}
-
-.slide {
 }
 
 .yearColor {
