@@ -18,7 +18,7 @@ export const TimelineCircle = forwardRef<SVGSVGElement, Props>(
     const hoverNumberRef = useRef<SVGTextElement | null>(null);
 
     const CIRCLE_SIZE = 530;
-    const PADDING = 70;
+    const PADDING = 75;
     const SVG_SIZE = CIRCLE_SIZE + PADDING * 2; // 770
     const CENTER = SVG_SIZE / 2;
     const RADIUS = CIRCLE_SIZE / 2;
