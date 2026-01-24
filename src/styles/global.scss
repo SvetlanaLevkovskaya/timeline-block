@@ -12,7 +12,7 @@ html,
 body {
   width: 100%;
   height: 100%;
-  //overflow: hidden;
+  overflow: auto;
   font-family: 'PT Sans', sans-serif;
   font-size: 20px;
   line-height: 1.3;
@@ -50,7 +50,6 @@ ol {
 .container {
   width: 100%;
   max-width: 1440px;
-  height: 100vh;
   margin: 0 auto;
   padding-left: 78px;
   padding-bottom: 24px;
@@ -59,7 +58,6 @@ ol {
     padding: 20px;
   }
 }
-
 
 button {
   cursor: pointer;

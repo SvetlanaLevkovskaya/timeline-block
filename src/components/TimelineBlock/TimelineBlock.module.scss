@@ -238,7 +238,6 @@ text {
     align-items: center;
     gap: 56px;
     width: 100%;
-    min-height: 100vh;
     box-sizing: border-box;
   }
 
@@ -303,8 +302,6 @@ text {
   .yearColor {
     font-size: 16px;
   }
-
-
 
   .mobileNav {
     position: fixed;
@@ -376,7 +373,6 @@ text {
   transition: opacity 0.3s ease;
 }
 
-/* Mobile & tablet */
 @media (max-width: $bp-tablet-xs) {
   :global(.swiper-slide) .slideInner {
     opacity: 0.3;
@@ -391,7 +387,6 @@ text {
   }
 }
 
-/* Desktop */
 @media (max-width: $bp-tablet-xs) {
   .slideInner {
     opacity: 1;
