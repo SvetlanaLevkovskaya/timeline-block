@@ -21,45 +21,60 @@ export const TimelineBlock = ({ ranges }: Props) => {
   const circleRef = useRef<SVGSVGElement>(null);
   const rotationRef = useRef(INITIAL_ROTATION);
   const directionRef = useRef<Direction>('forward');
+  const isAnimatingRef = useRef(false);
 
   const numberRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
+  const fromRef = useRef<HTMLSpanElement>(null);
+  const toRef = useRef<HTMLSpanElement>(null);
 
   const total = ranges.length;
   const step = 360 / total;
 
-  const angle = ((2 * Math.PI) / total) * activeIndex - Math.PI / 2 + Math.PI / total;
+  const animateGuard = (fn: () => void) => {
+    if (isAnimatingRef.current) return;
 
-  const prev = () => {
-    if (activeIndex === 0) return;
-    directionRef.current = 'backward';
-    rotationRef.current += step;
-    setActiveIndex((i) => (i === 0 ? total - 1 : i - 1));
+    isAnimatingRef.current = true;
+    fn();
+
+    gsap.delayedCall(0.85, () => {
+      isAnimatingRef.current = false;
+    });
   };
 
-  const next = () => {
-    if (activeIndex === total - 1) return;
-    directionRef.current = 'forward';
-    rotationRef.current -= step;
-    setActiveIndex((i) => (i === total - 1 ? 0 : i + 1));
-  };
-
-  const handleDotClick = (index: number) => {
-    if (index === activeIndex) return;
-
-    const diffForward = (index - activeIndex + total) % total;
-    const diffBackward = (activeIndex - index + total) % total;
-
-    if (diffForward <= diffBackward) {
-      directionRef.current = 'forward';
-      rotationRef.current -= diffForward * step;
-    } else {
+  const prev = () =>
+    animateGuard(() => {
+      if (activeIndex === 0) return;
       directionRef.current = 'backward';
-      rotationRef.current += diffBackward * step;
-    }
+      rotationRef.current += step;
+      setActiveIndex((i) => i - 1);
+    });
 
-    setActiveIndex(index);
-  };
+  const next = () =>
+    animateGuard(() => {
+      if (activeIndex === total - 1) return;
+      directionRef.current = 'forward';
+      rotationRef.current -= step;
+      setActiveIndex((i) => i + 1);
+    });
+
+  const handleDotClick = (index: number) =>
+    animateGuard(() => {
+      if (index === activeIndex) return;
+
+      const diffForward = (index - activeIndex + total) % total;
+      const diffBackward = (activeIndex - index + total) % total;
+
+      if (diffForward <= diffBackward) {
+        directionRef.current = 'forward';
+        rotationRef.current -= diffForward * step;
+      } else {
+        directionRef.current = 'backward';
+        rotationRef.current += diffBackward * step;
+      }
+
+      setActiveIndex(index);
+    });
 
   useEffect(() => {
     if (!circleRef.current) return;
@@ -71,7 +86,57 @@ export const TimelineBlock = ({ ranges }: Props) => {
       transformOrigin: '50% 50%',
       overwrite: 'auto',
     });
+
+    if (fromRef.current && toRef.current) {
+      gsap.to([fromRef.current, toRef.current], {
+        scale: 1.03,
+        duration: 0.4,
+        yoyo: true,
+        repeat: 1,
+        ease: 'power2.out',
+      });
+    }
   }, [activeIndex]);
+
+  useEffect(() => {
+    if (!fromRef.current || !toRef.current) return;
+
+    const prevIndex =
+      directionRef.current === 'forward'
+        ? Math.max(activeIndex - 1, 0)
+        : Math.min(activeIndex + 1, total - 1);
+
+    const prevRange = ranges[prevIndex];
+    const dir = directionRef.current === 'forward' ? 1 : -1;
+
+    gsap.fromTo(
+      fromRef.current,
+      { innerText: prevRange.from },
+      {
+        innerText: activeRange.from,
+        duration: 0.8,
+        ease: 'power2.out',
+        snap: { innerText: 1 },
+      }
+    );
+
+    gsap.fromTo(
+      toRef.current,
+      {
+        innerText: prevRange.to,
+        y: 20 * dir,
+        opacity: 0,
+      },
+      {
+        innerText: activeRange.to,
+        y: 0,
+        opacity: 1,
+        duration: 0.8,
+        ease: 'power3.out',
+        snap: { innerText: 1 },
+      }
+    );
+  }, [activeIndex, activeRange, ranges, total]);
 
   useEffect(() => {
     if (!numberRef.current || !titleRef.current) return;
@@ -107,8 +172,8 @@ export const TimelineBlock = ({ ranges }: Props) => {
         </div>
 
         <div className={styles.years}>
-          <span className={styles.from}>{activeRange.from}</span>
-          <span className={styles.to}>{activeRange.to}</span>
+          <span ref={fromRef} className={styles.from} />
+          <span ref={toRef} className={styles.to} />
         </div>
       </div>
 
@@ -119,13 +184,7 @@ export const TimelineBlock = ({ ranges }: Props) => {
 
         <div className={styles.arrowWrapper}>
           <button onClick={prev} className={styles.arrow} disabled={activeIndex === 0}>
-            <svg
-              width="9"
-              height="14"
-              viewBox="0 0 9 14"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
+            <svg width="9" height="14" viewBox="0 0 9 14" fill="none">
               <path
                 d="M7.66418 0.707108L1.41419 6.95711L7.66418 13.2071"
                 stroke="#42567A"
@@ -139,13 +198,7 @@ export const TimelineBlock = ({ ranges }: Props) => {
             className={clsx(styles.arrow, styles.right)}
             disabled={activeIndex === total - 1}
           >
-            <svg
-              width="9"
-              height="14"
-              viewBox="0 0 9 14"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
+            <svg width="9" height="14" viewBox="0 0 9 14" fill="none">
               <path
                 d="M1.33582 0.707108L7.58581 6.95711L1.33582 13.2071"
                 stroke="#42567A"
