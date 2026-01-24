@@ -1,6 +1,6 @@
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination } from 'swiper/modules';
-import { useState } from 'react';
+import { useState, useRef, useCallback } from 'react';
 
 import 'swiper/css';
 import 'swiper/css/navigation';
@@ -19,24 +19,24 @@ interface Props {
 }
 
 export const TimelineSlider = ({ events }: Props) => {
-  const [swiperInstance, setSwiperInstance] = useState<any>(null);
+  const swiperRef = useRef<any>(null);
   const [canPrev, setCanPrev] = useState(false);
   const [canNext, setCanNext] = useState(true);
 
   const isMobile = useMediaQuery('(max-width: 1020px)');
 
-  const handleSlideChange = (swiper: any) => {
+  const handleSlideChange = useCallback((swiper: any) => {
     setCanPrev(!swiper.isBeginning);
     setCanNext(!swiper.isEnd);
-  };
+  }, []);
+
+  const goPrev = () => swiperRef.current?.slidePrev();
+  const goNext = () => swiperRef.current?.slideNext();
 
   return (
     <div className={styles.sliderWrapper}>
       {!isMobile && canPrev && (
-        <button
-          className={`${styles.sliderArrow} ${styles.left}`}
-          onClick={() => swiperInstance?.slidePrev()}
-        >
+        <button className={`${styles.sliderArrow} ${styles.left}`} onClick={goPrev}>
           <svg width="8" height="12" viewBox="0 0 8 12" fill="none">
             <path
               d="M0.707093 0.707092L5.70709 5.70709L0.707093 10.7071"
@@ -48,10 +48,7 @@ export const TimelineSlider = ({ events }: Props) => {
       )}
 
       {!isMobile && canNext && (
-        <button
-          className={`${styles.sliderArrow} ${styles.right}`}
-          onClick={() => swiperInstance?.slideNext()}
-        >
+        <button className={`${styles.sliderArrow} ${styles.right}`} onClick={goNext}>
           <svg width="8" height="12" viewBox="0 0 8 12" fill="none">
             <path
               d="M0.707093 0.707092L5.70709 5.70709L0.707093 10.7071"
@@ -68,16 +65,15 @@ export const TimelineSlider = ({ events }: Props) => {
         spaceBetween={24}
         pagination={isMobile ? { clickable: true } : false}
         breakpoints={{
-          769: {
-            slidesPerView: 3,
-          },
+          0: { slidesPerView: 1.5 },
+          769: { slidesPerView: 3 },
         }}
         onSwiper={(swiper) => {
-          setSwiperInstance(swiper);
+          swiperRef.current = swiper;
           handleSlideChange(swiper);
         }}
-        onSlideChange={handleSlideChange}
-        onResize={handleSlideChange}
+        onSlideChange={(swiper) => handleSlideChange(swiper)}
+        onResize={(swiper) => handleSlideChange(swiper)}
       >
         {events.map((event, index) => (
           <SwiperSlide key={index} className={styles.slide}>
