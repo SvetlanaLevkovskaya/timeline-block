@@ -1,13 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { TimelineRange } from './timeline.types';
-import { TimelineCircle } from './TimelineCircle';
-import { TimelineSlider } from './TimelineSlider';
 import { gsap } from 'gsap';
 import styles from './TimelineBlock.module.scss';
-import clsx from 'clsx';
+import { TimelineDesktop } from './TimelineDesktop';
+import { TimelineMobile } from './TimelineMobile';
 
 const INITIAL_ROTATION = 0;
-
 type Direction = 'forward' | 'backward';
 
 type Props = {
@@ -33,10 +31,8 @@ export const TimelineBlock = ({ ranges }: Props) => {
 
   const animateGuard = (fn: () => void) => {
     if (isAnimatingRef.current) return;
-
     isAnimatingRef.current = true;
     fn();
-
     gsap.delayedCall(0.85, () => {
       isAnimatingRef.current = false;
     });
@@ -158,58 +154,33 @@ export const TimelineBlock = ({ ranges }: Props) => {
     <section className={styles.timeline}>
       <h2 className={styles.title}>Исторические даты</h2>
 
-      <div className={styles.circleWrapper}>
-        <div className={styles.circleClip}>
-          <TimelineCircle
-            ranges={ranges}
-            activeIndex={activeIndex}
-            onChange={handleDotClick}
-            circleRef={circleRef}
-            rotation={rotationRef.current}
-            numberRef={numberRef}
-            titleRef={titleRef}
-          />
-        </div>
-
-        <div className={styles.years}>
-          <span ref={fromRef} className={styles.from} />
-          <span ref={toRef} className={styles.to} />
-        </div>
+      <div className={styles.desktopOnly}>
+        <TimelineDesktop
+          ranges={ranges}
+          activeIndex={activeIndex}
+          total={total}
+          activeRange={activeRange}
+          onPrev={prev}
+          onNext={next}
+          onDotClick={handleDotClick}
+          rotation={rotationRef.current}
+          circleRef={circleRef}
+          numberRef={numberRef}
+          titleRef={titleRef}
+          fromRef={fromRef}
+          toRef={toRef}
+        />
       </div>
 
-      <div className={styles.sliderNav}>
-        <span className={styles.counter}>
-          {String(activeIndex + 1).padStart(2, '0')}/{total.toString().padStart(2, '0')}
-        </span>
-
-        <div className={styles.arrowWrapper}>
-          <button onClick={prev} className={styles.arrow} disabled={activeIndex === 0}>
-            <svg width="9" height="14" viewBox="0 0 9 14" fill="none">
-              <path
-                d="M7.66418 0.707108L1.41419 6.95711L7.66418 13.2071"
-                stroke="#42567A"
-                strokeWidth="2"
-              />
-            </svg>
-          </button>
-
-          <button
-            onClick={next}
-            className={clsx(styles.arrow, styles.right)}
-            disabled={activeIndex === total - 1}
-          >
-            <svg width="9" height="14" viewBox="0 0 9 14" fill="none">
-              <path
-                d="M1.33582 0.707108L7.58581 6.95711L1.33582 13.2071"
-                stroke="#42567A"
-                strokeWidth="2"
-              />
-            </svg>
-          </button>
-        </div>
+      <div className={styles.mobileOnly}>
+        <TimelineMobile
+          activeIndex={activeIndex}
+          total={total}
+          activeRange={activeRange}
+          onPrev={prev}
+          onNext={next}
+        />
       </div>
-
-      <TimelineSlider events={activeRange.events} />
     </section>
   );
 };

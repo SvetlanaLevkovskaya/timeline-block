@@ -1,8 +1,11 @@
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation } from 'swiper/modules';
+import { Navigation, Pagination } from 'swiper/modules';
+import { useState } from 'react';
+
 import 'swiper/css';
 import 'swiper/css/navigation';
-import { useRef, useState } from 'react';
+import 'swiper/css/pagination';
+
 import styles from './TimelineBlock.module.scss';
 
 interface Event {
@@ -15,28 +18,23 @@ interface Props {
 }
 
 export const TimelineSlider = ({ events }: Props) => {
-  const prevRef = useRef<HTMLButtonElement>(null);
-  const nextRef = useRef<HTMLButtonElement>(null);
+  const [swiperInstance, setSwiperInstance] = useState<any>(null);
   const [canPrev, setCanPrev] = useState(false);
   const [canNext, setCanNext] = useState(true);
 
-  const [swiperInstance, setSwiperInstance] = useState<any>(null);
+  const handleSlideChange = (swiper: any) => {
+    setCanPrev(!swiper.isBeginning);
+    setCanNext(!swiper.isEnd);
+  };
 
   return (
     <div className={styles.sliderWrapper}>
       {canPrev && (
         <button
-          ref={prevRef}
           className={`${styles.sliderArrow} ${styles.left}`}
           onClick={() => swiperInstance?.slidePrev()}
         >
-          <svg
-            width="8"
-            height="12"
-            viewBox="0 0 8 12"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
+          <svg width="8" height="12" viewBox="0 0 8 12" fill="none">
             <path
               d="M0.707093 0.707092L5.70709 5.70709L0.707093 10.7071"
               stroke="#3877EE"
@@ -48,17 +46,10 @@ export const TimelineSlider = ({ events }: Props) => {
 
       {canNext && (
         <button
-          ref={nextRef}
           className={`${styles.sliderArrow} ${styles.right}`}
           onClick={() => swiperInstance?.slideNext()}
         >
-          <svg
-            width="8"
-            height="12"
-            viewBox="0 0 8 12"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
+          <svg width="8" height="12" viewBox="0 0 8 12" fill="none">
             <path
               d="M0.707093 0.707092L5.70709 5.70709L0.707093 10.7071"
               stroke="#3877EE"
@@ -69,22 +60,28 @@ export const TimelineSlider = ({ events }: Props) => {
       )}
 
       <Swiper
-        modules={[Navigation]}
-        slidesPerView={1}
+        modules={[Navigation, Pagination]}
+        slidesPerView={1.5}
         spaceBetween={24}
-        breakpoints={{ 768: { slidesPerView: 3 } }}
+        pagination={{ clickable: true }}
+        breakpoints={{
+          769: {
+            slidesPerView: 3,
+            pagination: { enabled: false },
+          },
+        }}
         onSwiper={(swiper) => {
           setSwiperInstance(swiper);
+          handleSlideChange(swiper);
         }}
-        onSlideChange={(swiper) => {
-          setCanPrev(!swiper.isBeginning);
-          setCanNext(!swiper.isEnd);
-        }}
+        onSlideChange={handleSlideChange}
       >
         {events.map((event, index) => (
           <SwiperSlide key={index} className={styles.slide}>
-            <p className={styles.yearColor}>{event.year}</p>
-            <p>{event.description}</p>
+            <div className={styles.slideInner}>
+              <p className={styles.yearColor}>{event.year}</p>
+              <p className={styles.slideText}>{event.description}</p>
+            </div>
           </SwiperSlide>
         ))}
       </Swiper>

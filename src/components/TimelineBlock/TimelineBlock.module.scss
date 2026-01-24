@@ -1,12 +1,32 @@
+:root {
+  --color-primary: #3877ee;
+  --color-secondary: #ef5da8;
+  --color-text: #42567a;
+
+  --font-accent: 'Bebas Neue', sans-serif;
+  --timeline-offset: 170px;
+  --circle-size: 680px;
+}
+
+$bp-tablet: 1020px;
+$bp-tablet-sm: 978px;
+$bp-tablet-xs: 768px;
+$bp-mobile: 475px;
+
+/* =========================
+   Base styles (desktop)
+========================= */
+
 .timeline {
   position: relative;
-  margin-top: 170px;
+  margin-top: var(--timeline-offset);
 }
+
 .title {
   max-width: 353px;
   font-size: 56px;
   font-weight: 600;
-  color: #42567a;
+  color: var(--color-text);
   line-height: 120%;
   text-align: left;
   position: relative;
@@ -18,14 +38,18 @@
     top: 0;
     width: 4px;
     height: 100%;
-    background: linear-gradient(to bottom, #3877ee, #ef5da8);
+    background: linear-gradient(
+                    to bottom,
+                    var(--color-primary),
+                    var(--color-secondary)
+    );
   }
 }
 
 .circleWrapper {
   position: relative;
-  width: 680px;
-  height: 680px;
+  width: var(--circle-size);
+  height: var(--circle-size);
   margin: 0 auto;
   transform: translateY(-180px);
 }
@@ -43,7 +67,7 @@
   transform: translate(-50%, -50%);
   display: flex;
   gap: 136px;
-  font-size: 180px;
+  font-size: clamp(72px, 15vw, 180px);
   font-weight: 600;
   line-height: 160px;
   letter-spacing: -0.02em;
@@ -52,19 +76,15 @@
   .from {
     color: #5d5fef;
   }
-  .to {
-    color: #ef5da8;
-  }
-}
 
-.circleWrapper {
-  position: relative;
+  .to {
+    color: var(--color-secondary);
+  }
 }
 
 .sliderNav {
   display: flex;
   flex-direction: column;
-  justify-content: start;
   gap: 24px;
   margin-top: -360px;
   margin-bottom: 48px;
@@ -81,14 +101,11 @@
   border: 2px solid rgba(66, 86, 122, 0.5);
   border-radius: 50%;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   padding: 0;
-  transition:
-    background 0.2s,
-    transform 0.2s;
+  transition: background 0.2s, transform 0.2s;
 
   &:hover:not(:disabled) {
     background: #f0f0f0;
@@ -102,7 +119,7 @@
 .counter {
   font-size: 18px;
   font-weight: 600;
-  color: #42567a;
+  color: var(--color-text);
 }
 
 .svgTitle {
@@ -127,18 +144,15 @@ text {
   border-radius: 50%;
   border: none;
   background-color: #f0f0f0;
-  color: #42567a;
+  color: var(--color-text);
   font-size: 18px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   z-index: 10;
-  transition:
-    background-color 0.2s,
-    box-shadow 0.2s,
-    transform 0.2s;
   transform: translateY(-50%);
+  transition: background-color 0.2s, box-shadow 0.2s;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 
   &.left {
@@ -164,11 +178,223 @@ text {
 }
 
 .yearColor {
-  font-family:
-    Bebas Neue,
-    sans-serif;
+  font-family: var(--font-accent), sans-serif;
   font-size: 25px;
   line-height: 120%;
-  color: #3877ee;
+  color: var(--color-primary);
   padding-bottom: 16px;
 }
+
+.desktopOnly {
+  display: block;
+}
+
+.mobileOnly {
+  display: none;
+}
+
+/* =========================
+   Tablet & below
+========================= */
+
+@media (max-width: $bp-tablet) {
+  :global(.swiper) {
+    width: calc(100vw - 20px);
+  }
+
+  :global(.swiper-pagination) {
+    position: fixed !important;
+    bottom: 32px !important;
+    right: 20% !important;
+    transform: translateX(-50%);
+    z-index: 1000;
+  }
+
+
+  :global(.swiper-pagination-bullets) {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  :global(.swiper-pagination-bullet) {
+    width: 6px;
+    height: 6px;
+    background-color: var(--color-text) !important;
+    margin: 0 !important;
+  }
+
+  :global(.swiper-pagination-bullet-active) {
+    background-color: var(--color-text) !important;
+  }
+
+  .desktopOnly {
+    display: none;
+  }
+
+  .mobileOnly {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 56px;
+    width: 100%;
+    min-height: 100vh;
+    box-sizing: border-box;
+  }
+
+  .timeline {
+    position: static;
+    margin-top: 60px;
+  }
+
+  .title {
+    max-width: 250px;
+    font-size: 36px;
+
+    &::before {
+      display: none;
+    }
+  }
+
+  .yearsMobile {
+    padding-top: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 56px;
+    font-size: 120px;
+    font-weight: 600;
+    line-height: 72px;
+    letter-spacing: -0.02em;
+    pointer-events: none;
+
+    .from {
+      color: var(--color-primary);
+    }
+
+    .to {
+      color: var(--color-secondary);
+    }
+  }
+
+  .mobileWrapper > .sliderWrapper {
+    position: relative;
+    padding: 20px 0 32px;
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0 0 auto;
+      height: 1px;
+      background-color: rgba(66, 86, 122, 0.2);
+    }
+  }
+
+  .slide {
+    background: transparent;
+    font-size: 14px;
+    line-height: 145%;
+  }
+
+  .slideInner {
+    transition: opacity 0.3s;
+  }
+
+  .yearColor {
+    font-size: 16px;
+  }
+
+
+
+  .mobileNav {
+    position: fixed;
+    left: 16px;
+    bottom: 16px;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    .arrowWrapper {
+      display: flex;
+      gap: 8px;
+    }
+
+    .arrow {
+      width: 24px;
+      height: 24px;
+      border: 1px solid rgba(66, 86, 122, 0.5);
+      background-color: #f0f0f0;
+
+      &.right svg {
+        transform: rotate(180deg);
+      }
+    }
+
+    .counter {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--color-text);
+    }
+  }
+}
+
+/* =========================
+   Tablet small
+========================= */
+
+@media (max-width: $bp-tablet-sm) {
+  .yearsMobile {
+    font-size: 96px;
+    gap: 24px;
+  }
+}
+
+@media (max-width: $bp-tablet-xs) {
+  .sliderArrow {
+    display: none;
+  }
+}
+
+/* =========================
+   Mobile
+========================= */
+
+@media (max-width: $bp-mobile) {
+  .yearsMobile {
+    font-size: 56px;
+    gap: 16px;
+  }
+}
+
+
+/* =========================
+   Slider opacity logic
+========================= */
+
+.slideInner {
+  transition: opacity 0.3s ease;
+}
+
+/* Mobile & tablet */
+@media (max-width: $bp-tablet-xs) {
+  :global(.swiper-slide) .slideInner {
+    opacity: 0.3;
+  }
+
+  :global(.swiper-slide-active) .slideInner {
+    opacity: 1;
+  }
+
+  :global(.swiper-slide-next) .slideInner {
+    opacity: 0.5;
+  }
+}
+
+/* Desktop */
+@media (max-width: $bp-tablet-xs) {
+  .slideInner {
+    opacity: 1;
+  }
+}
+
