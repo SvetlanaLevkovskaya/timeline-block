@@ -7,6 +7,7 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 
 import styles from './TimelineBlock.module.scss';
+import { useMediaQuery } from '../../hooks/useMediaQuery';
 
 interface Event {
   year: number;
@@ -22,6 +23,8 @@ export const TimelineSlider = ({ events }: Props) => {
   const [canPrev, setCanPrev] = useState(false);
   const [canNext, setCanNext] = useState(true);
 
+  const isMobile = useMediaQuery('(max-width: 1020px)');
+
   const handleSlideChange = (swiper: any) => {
     setCanPrev(!swiper.isBeginning);
     setCanNext(!swiper.isEnd);
@@ -29,7 +32,7 @@ export const TimelineSlider = ({ events }: Props) => {
 
   return (
     <div className={styles.sliderWrapper}>
-      {canPrev && (
+      {!isMobile && canPrev && (
         <button
           className={`${styles.sliderArrow} ${styles.left}`}
           onClick={() => swiperInstance?.slidePrev()}
@@ -44,7 +47,7 @@ export const TimelineSlider = ({ events }: Props) => {
         </button>
       )}
 
-      {canNext && (
+      {!isMobile && canNext && (
         <button
           className={`${styles.sliderArrow} ${styles.right}`}
           onClick={() => swiperInstance?.slideNext()}
@@ -63,11 +66,10 @@ export const TimelineSlider = ({ events }: Props) => {
         modules={[Navigation, Pagination]}
         slidesPerView={1.5}
         spaceBetween={24}
-        pagination={{ clickable: true }}
+        pagination={isMobile ? { clickable: true } : false}
         breakpoints={{
           769: {
             slidesPerView: 3,
-            pagination: { enabled: false },
           },
         }}
         onSwiper={(swiper) => {
@@ -75,6 +77,7 @@ export const TimelineSlider = ({ events }: Props) => {
           handleSlideChange(swiper);
         }}
         onSlideChange={handleSlideChange}
+        onResize={handleSlideChange}
       >
         {events.map((event, index) => (
           <SwiperSlide key={index} className={styles.slide}>
