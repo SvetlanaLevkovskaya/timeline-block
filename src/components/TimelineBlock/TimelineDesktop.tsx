@@ -2,7 +2,8 @@ import { TimelineRange } from './timeline.types';
 import { TimelineCircle } from './TimelineCircle';
 import { TimelineSlider } from './TimelineSlider';
 import styles from './TimelineBlock.module.scss';
-import clsx from 'clsx';
+import { formatCounter } from '../../utils/formatCounter';
+import { ArrowButton } from '../ui/ArrowButton/ArrowButton';
 
 type Props = {
   ranges: TimelineRange[];
@@ -13,8 +14,8 @@ type Props = {
   onNext: () => void;
   onDotClick: (i: number) => void;
   circleRef: React.Ref<SVGSVGElement>;
-  numberRef: React.RefObject<HTMLDivElement | null>;
-  titleRef: React.RefObject<HTMLDivElement | null>;
+  numberRef: React.RefObject<SVGTextElement | null>;
+  titleRef: React.RefObject<SVGForeignObjectElement | null>;
   fromRef: React.RefObject<HTMLSpanElement | null>;
   toRef: React.RefObject<HTMLSpanElement | null>;
   rotation: number;
@@ -58,33 +59,13 @@ export const TimelineDesktop = ({
 
       <div className={styles.sliderNav}>
         <span className={styles.counter}>
-          {String(activeIndex + 1).padStart(2, '0')}/{String(total).padStart(2, '0')}
+          {formatCounter(activeIndex + 1)}/{formatCounter(total)}
         </span>
 
         <div className={styles.arrowWrapper}>
-          <button onClick={onPrev} className={styles.arrow} disabled={activeIndex === 0}>
-            <svg width="9" height="14" viewBox="0 0 9 14" fill="none">
-              <path
-                d="M7.66418 0.707108L1.41419 6.95711L7.66418 13.2071"
-                stroke="#42567A"
-                strokeWidth="2"
-              />
-            </svg>
-          </button>
+          <ArrowButton onClick={onPrev} disabled={activeIndex === 0} />
 
-          <button
-            onClick={onNext}
-            className={clsx(styles.arrow, styles.right)}
-            disabled={activeIndex === total - 1}
-          >
-            <svg width="9" height="14" viewBox="0 0 9 14" fill="none">
-              <path
-                d="M1.33582 0.707108L7.58581 6.95711L1.33582 13.2071"
-                stroke="#42567A"
-                strokeWidth="2"
-              />
-            </svg>
-          </button>
+          <ArrowButton onClick={onNext} disabled={activeIndex === total - 1} direction="right" />
         </div>
       </div>
 

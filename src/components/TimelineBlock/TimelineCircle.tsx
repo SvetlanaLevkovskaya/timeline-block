@@ -8,8 +8,8 @@ interface Props {
   onChange: (index: number) => void;
   circleRef?: React.Ref<SVGSVGElement>;
   rotation: number;
-  numberRef: any;
-  titleRef: any;
+  numberRef: React.RefObject<SVGTextElement | null>;
+  titleRef: React.RefObject<SVGForeignObjectElement | null>;
 }
 
 export const TimelineCircle = forwardRef<SVGSVGElement, Props>(

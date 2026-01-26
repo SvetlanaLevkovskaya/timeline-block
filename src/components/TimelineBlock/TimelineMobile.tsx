@@ -1,7 +1,8 @@
 import { TimelineRange } from './timeline.types';
 import { TimelineSlider } from './TimelineSlider';
 import styles from './TimelineBlock.module.scss';
-import clsx from 'clsx';
+import { formatCounter } from '../../utils/formatCounter';
+import { ArrowButton } from '../ui/ArrowButton/ArrowButton';
 
 type Props = {
   activeIndex: number;
@@ -23,45 +24,18 @@ export const TimelineMobile = ({ activeIndex, total, activeRange, onPrev, onNext
 
       <div className={styles.mobileNav}>
         <span className={styles.counter}>
-          {String(activeIndex + 1).padStart(2, '0')}/{String(total).padStart(2, '0')}
+          {formatCounter(activeIndex + 1)}/{formatCounter(total)}
         </span>
 
         <div className={styles.arrowWrapper}>
-          <button onClick={onPrev} className={styles.arrow} disabled={activeIndex === 0}>
-            <svg
-              width="6"
-              height="8"
-              viewBox="0 0 6 8"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M4.53918 0.707093L1.41418 3.83209L4.53918 6.95709"
-                stroke="#42567A"
-                stroke-width="2"
-              />
-            </svg>
-          </button>
+          <ArrowButton onClick={onPrev} disabled={activeIndex === 0} size="mobile" />
 
-          <button
+          <ArrowButton
             onClick={onNext}
-            className={clsx(styles.arrow, styles.right)}
             disabled={activeIndex === total - 1}
-          >
-            <svg
-              width="6"
-              height="8"
-              viewBox="0 0 6 8"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M4.53918 0.707093L1.41418 3.83209L4.53918 6.95709"
-                stroke="#42567A"
-                stroke-width="2"
-              />
-            </svg>
-          </button>
+            size="mobile"
+            direction="right"
+          />
         </div>
       </div>
     </div>

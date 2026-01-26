@@ -21,8 +21,8 @@ export const TimelineBlock = ({ ranges }: Props) => {
   const directionRef = useRef<Direction>('forward');
   const isAnimatingRef = useRef(false);
 
-  const numberRef = useRef<HTMLDivElement>(null);
-  const titleRef = useRef<HTMLDivElement>(null);
+  const numberRef = useRef<SVGTextElement>(null);
+  const titleRef = useRef<SVGForeignObjectElement>(null);
   const fromRef = useRef<HTMLSpanElement>(null);
   const toRef = useRef<HTMLSpanElement>(null);
 

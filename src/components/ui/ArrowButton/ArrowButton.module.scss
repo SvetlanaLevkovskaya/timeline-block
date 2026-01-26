@@ -1,0 +1,38 @@
+.arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  padding: 0;
+  cursor: pointer;
+  background-color: #f0f0f0;
+  border: 1px solid rgba(66, 86, 122, 0.5);
+  transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+
+  &:hover:not(:disabled) {
+    background-color: #eaeaea;
+  }
+
+  &.desktop {
+    width: 50px;
+    height: 50px;
+    border-width: 2px;
+    box-shadow: none;
+  }
+
+  &.mobile {
+    width: 24px;
+    height: 24px;
+    border-width: 1px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  }
+
+  svg {
+    display: block;
+  }
+}

@@ -6,6 +6,8 @@
   --font-accent: 'Bebas Neue', sans-serif;
   --timeline-offset: 170px;
   --circle-size: 680px;
+  --circle-translate-y: -180px;
+  --slider-nav-offset: -360px;
 }
 
 $bp-tablet: 1020px;
@@ -20,6 +22,9 @@ $bp-mobile: 475px;
 .timeline {
   position: relative;
   margin-top: var(--timeline-offset);
+  text {
+    pointer-events: none;
+  }
 }
 
 .title {
@@ -51,7 +56,7 @@ $bp-mobile: 475px;
   width: var(--circle-size);
   height: var(--circle-size);
   margin: 0 auto;
-  transform: translateY(-180px);
+  transform: translateY(var(--circle-translate-y));
 }
 
 .circleClip {
@@ -86,34 +91,13 @@ $bp-mobile: 475px;
   display: flex;
   flex-direction: column;
   gap: 24px;
-  margin-top: -360px;
+  margin-top: var(--slider-nav-offset);
   margin-bottom: 48px;
 }
 
 .arrowWrapper {
   display: flex;
   gap: 16px;
-}
-
-.arrow {
-  width: 50px;
-  height: 50px;
-  border: 2px solid rgba(66, 86, 122, 0.5);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  padding: 0;
-  transition: background 0.2s, transform 0.2s;
-
-  &:hover:not(:disabled) {
-    background: #f0f0f0;
-  }
-
-  svg {
-    display: block;
-  }
 }
 
 .counter {
@@ -125,10 +109,6 @@ $bp-mobile: 475px;
 .svgTitle {
   pointer-events: none;
   font-weight: 700;
-}
-
-text {
-  pointer-events: none;
 }
 
 .sliderWrapper {
@@ -206,15 +186,6 @@ text {
     width: calc(100vw - 20px);
   }
 
-  :global(.swiper-pagination) {
-    position: fixed !important;
-    bottom: 32px !important;
-    right: 20% !important;
-    transform: translateX(-50%);
-    z-index: 1000;
-  }
-
-
   :global(.swiper-pagination-bullets) {
     display: flex;
     justify-content: center;
@@ -237,6 +208,12 @@ text {
   }
 
   .mobileOnly {
+    :global(.swiper-pagination) {
+      position: fixed;
+      bottom: 32px !important;
+      right: 20%;
+    }
+
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -317,17 +294,6 @@ text {
       gap: 8px;
     }
 
-    .arrow {
-      width: 24px;
-      height: 24px;
-      border: 1px solid rgba(66, 86, 122, 0.5);
-      background-color: #f0f0f0;
-
-      &.right svg {
-        transform: rotate(180deg);
-      }
-    }
-
     .counter {
       font-size: 14px;
       font-weight: 400;
@@ -365,7 +331,7 @@ text {
 
 @media (max-width: $bp-tablet-xs) {
   :global(.swiper-slide) .slideInner {
-    //opacity: 0.3;
+    opacity: 0.3;
   }
 
   :global(.swiper-slide-active) .slideInner {
@@ -374,11 +340,5 @@ text {
 
   :global(.swiper-slide-next) .slideInner {
     opacity: 0.5;
-  }
-}
-
-@media (max-width: $bp-tablet-xs) {
-  .slideInner {
-    opacity: 1;
   }
 }
