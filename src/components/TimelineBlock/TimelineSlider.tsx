@@ -1,6 +1,6 @@
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination } from 'swiper/modules';
-import { useState, useRef, useCallback } from 'react';
+import { useCallback, useRef, useState } from 'react';
 
 import 'swiper/css';
 import 'swiper/css/navigation';
@@ -36,7 +36,11 @@ export const TimelineSlider = ({ events }: Props) => {
   return (
     <div className={styles.sliderWrapper}>
       {!isMobile && canPrev && (
-        <button className={`${styles.sliderArrow} ${styles.left}`} onClick={goPrev}>
+        <button
+          aria-label="Previous slide"
+          className={`${styles.sliderArrow} ${styles.left}`}
+          onClick={goPrev}
+        >
           <svg width="8" height="12" viewBox="0 0 8 12" fill="none">
             <path
               d="M0.707093 0.707092L5.70709 5.70709L0.707093 10.7071"
@@ -48,7 +52,11 @@ export const TimelineSlider = ({ events }: Props) => {
       )}
 
       {!isMobile && canNext && (
-        <button className={`${styles.sliderArrow} ${styles.right}`} onClick={goNext}>
+        <button
+          aria-label="Next slide"
+          className={`${styles.sliderArrow} ${styles.right}`}
+          onClick={goNext}
+        >
           <svg width="8" height="12" viewBox="0 0 8 12" fill="none">
             <path
               d="M0.707093 0.707092L5.70709 5.70709L0.707093 10.7071"

@@ -28,9 +28,15 @@ export const TimelineMobile = ({ activeIndex, total, activeRange, onPrev, onNext
         </span>
 
         <div className={styles.arrowWrapper}>
-          <ArrowButton onClick={onPrev} disabled={activeIndex === 0} size="mobile" />
+          <ArrowButton
+            ariaLabel="Previous slide"
+            onClick={onPrev}
+            disabled={activeIndex === 0}
+            size="mobile"
+          />
 
           <ArrowButton
+            ariaLabel="Next slide"
             onClick={onNext}
             disabled={activeIndex === total - 1}
             size="mobile"

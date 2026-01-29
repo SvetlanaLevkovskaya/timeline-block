@@ -4,8 +4,8 @@ import './styles/global.scss';
 
 export default function App() {
   return (
-    <div className="container">
+    <main className="container">
       <TimelineBlock ranges={data} />
-    </div>
+    </main>
   );
 }

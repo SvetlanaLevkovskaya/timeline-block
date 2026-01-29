@@ -30,7 +30,7 @@ $bp-mobile: 475px;
 .title {
   max-width: 353px;
   font-size: 56px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--color-text);
   line-height: 120%;
   text-align: left;
@@ -73,7 +73,7 @@ $bp-mobile: 475px;
   display: flex;
   gap: 136px;
   font-size: clamp(72px, 15vw, 180px);
-  font-weight: 600;
+  font-weight: 700;
   line-height: 160px;
   letter-spacing: -0.02em;
   pointer-events: none;
@@ -102,7 +102,7 @@ $bp-mobile: 475px;
 
 .counter {
   font-size: 18px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--color-text);
 }
 
@@ -243,7 +243,7 @@ $bp-mobile: 475px;
     justify-content: center;
     gap: 56px;
     font-size: 120px;
-    font-weight: 600;
+    font-weight: 700;
     line-height: 72px;
     letter-spacing: -0.02em;
     pointer-events: none;

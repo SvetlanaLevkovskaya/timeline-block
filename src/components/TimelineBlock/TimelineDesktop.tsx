@@ -63,9 +63,14 @@ export const TimelineDesktop = ({
         </span>
 
         <div className={styles.arrowWrapper}>
-          <ArrowButton onClick={onPrev} disabled={activeIndex === 0} />
+          <ArrowButton ariaLabel="Previous slide" onClick={onPrev} disabled={activeIndex === 0} />
 
-          <ArrowButton onClick={onNext} disabled={activeIndex === total - 1} direction="right" />
+          <ArrowButton
+            ariaLabel="Next slide"
+            onClick={onNext}
+            disabled={activeIndex === total - 1}
+            direction="right"
+          />
         </div>
       </div>
 
