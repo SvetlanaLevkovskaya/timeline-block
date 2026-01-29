@@ -57,6 +57,11 @@ $bp-mobile: 475px;
   height: var(--circle-size);
   margin: 0 auto;
   transform: translateY(var(--circle-translate-y));
+
+  & svg {
+    position: relative;
+    z-index: 2;
+  }
 }
 
 .circleClip {
@@ -71,12 +76,13 @@ $bp-mobile: 475px;
   left: 50%;
   transform: translate(-50%, -50%);
   display: flex;
-  gap: 136px;
+  gap: 120px;
   font-size: clamp(72px, 15vw, 180px);
   font-weight: 700;
   line-height: 160px;
   letter-spacing: -0.02em;
   pointer-events: none;
+  z-index: 1;
 
   .from {
     color: #5d5fef;
