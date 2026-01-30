@@ -1,6 +1,7 @@
-import { forwardRef, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import styles from './TimelineBlock.module.scss';
 import { gsap } from 'gsap';
+import { TimelineDot } from './TimelineDot';
 
 interface Props {
   ranges: { title: string }[];
@@ -12,156 +13,142 @@ interface Props {
   titleRef: React.RefObject<SVGForeignObjectElement | null>;
 }
 
-export const TimelineCircle = forwardRef<SVGSVGElement, Props>(
-  ({ ranges, activeIndex, onChange, circleRef, rotation, numberRef, titleRef }, ref) => {
-    const [hoverIndex, setHoverIndex] = useState<number | null>(null);
-    const hoverNumberRef = useRef<SVGTextElement | null>(null);
+export const TimelineCircle = ({
+  ranges,
+  activeIndex,
+  onChange,
+  circleRef,
+  rotation,
+  numberRef,
+  titleRef,
+}: Props) => {
+  const [hoverIndex, setHoverIndex] = useState<number | null>(null);
+  const hoverNumberRef = useRef<SVGTextElement | null>(null);
 
-    const CIRCLE_SIZE = 530;
-    const PADDING = 75;
-    const SVG_SIZE = CIRCLE_SIZE + PADDING * 2;
-    const CENTER = SVG_SIZE / 2;
-    const RADIUS = CIRCLE_SIZE / 2;
+  if (!ranges.length) return null;
 
-    const TOTAL = ranges.length;
-    const STEP = (2 * Math.PI) / TOTAL;
-    const ANGLE_OFFSET = -Math.PI / 2 + STEP / 2;
+  const CIRCLE_SIZE = 530;
+  const PADDING = 75;
+  const SVG_SIZE = CIRCLE_SIZE + PADDING * 2;
+  const CENTER = SVG_SIZE / 2;
+  const RADIUS = CIRCLE_SIZE / 2;
 
-    const activeAngle = STEP * activeIndex + ANGLE_OFFSET;
-    const activeX = CENTER + RADIUS * Math.cos(activeAngle);
-    const activeY = CENTER + RADIUS * Math.sin(activeAngle);
+  const STEP = (2 * Math.PI) / ranges.length;
+  const ANGLE_OFFSET = -Math.PI / 2 + STEP / 2;
 
-    const hoverX =
-      hoverIndex !== null ? CENTER + RADIUS * Math.cos(STEP * hoverIndex + ANGLE_OFFSET) : 0;
-    const hoverY =
-      hoverIndex !== null ? CENTER + RADIUS * Math.sin(STEP * hoverIndex + ANGLE_OFFSET) : 0;
+  const getPoint = (index: number) => {
+    const angle = STEP * index + ANGLE_OFFSET;
+    return {
+      x: CENTER + RADIUS * Math.cos(angle),
+      y: CENTER + RADIUS * Math.sin(angle),
+    };
+  };
 
-    useEffect(() => {
-      if (!hoverNumberRef.current) return;
+  const active = getPoint(activeIndex);
+  const hover = hoverIndex !== null ? getPoint(hoverIndex) : null;
 
-      gsap.fromTo(
-        hoverNumberRef.current,
-        { opacity: 0, scale: 0.6, transformOrigin: '50% 50%' },
-        { opacity: 1, scale: 1, duration: 0.25, ease: 'power2.out' }
-      );
-    }, [hoverIndex]);
+  useEffect(() => {
+    if (!hoverNumberRef.current) return;
 
-    return (
-      <svg
-        width={SVG_SIZE}
-        height={SVG_SIZE}
-        viewBox={`0 0 ${SVG_SIZE} ${SVG_SIZE}`}
-        className={styles.circle}
-        ref={circleRef || ref}
+    const tween = gsap.fromTo(
+      hoverNumberRef.current,
+      { opacity: 0, scale: 0.6, transformOrigin: '50% 50%' },
+      { opacity: 1, scale: 1, duration: 0.25, ease: 'power2.out' }
+    );
+
+    return () => {
+      tween.kill();
+    };
+  }, [hoverIndex]);
+
+  return (
+    <svg
+      width={SVG_SIZE}
+      height={SVG_SIZE}
+      viewBox={`0 0 ${SVG_SIZE} ${SVG_SIZE}`}
+      className={styles.circle}
+      ref={circleRef}
+    >
+      <g className="rotating">
+        <circle cx={CENTER} cy={CENTER} r={RADIUS} stroke="#42567A" fill="none" opacity={0.2} />
+
+        {ranges.map((_, index) => {
+          const { x, y } = getPoint(index);
+
+          return (
+            <TimelineDot
+              key={index}
+              x={x}
+              y={y}
+              isActive={index === activeIndex}
+              isHover={index === hoverIndex && index !== activeIndex}
+              onMouseEnter={() => setHoverIndex(index)}
+              onMouseLeave={() => setHoverIndex(null)}
+              onClick={() => {
+                setHoverIndex(null);
+                onChange(index);
+              }}
+            />
+          );
+        })}
+      </g>
+
+      <g
+        pointerEvents="none"
+        transform={`
+            translate(${active.x} ${active.y})
+            rotate(${-rotation})
+            translate(${-active.x} ${-active.y})
+          `}
       >
-        <g className="rotating">
-          <circle cx={CENTER} cy={CENTER} r={RADIUS} stroke="#42567A" fill="none" opacity={0.2} />
+        <text
+          ref={numberRef}
+          x={active.x}
+          y={active.y}
+          textAnchor="middle"
+          dominantBaseline="middle"
+          fontSize={20}
+          fill="#42567A"
+        >
+          {activeIndex + 1}
+        </text>
+      </g>
 
-          {ranges.map((_, index) => {
-            const angle = STEP * index + ANGLE_OFFSET;
-            const x = CENTER + RADIUS * Math.cos(angle);
-            const y = CENTER + RADIUS * Math.sin(angle);
-
-            const isActive = index === activeIndex;
-            const isHover = index === hoverIndex && index !== activeIndex;
-
-            const targetR = isActive || isHover ? 28 : 3;
-            const targetFill = isActive || isHover ? '#F4F5F9' : '#42567A';
-            const targetStroke = isActive || isHover ? '#42567A' : 'none';
-
-            const circleRef = useRef<SVGCircleElement | null>(null);
-
-            useEffect(() => {
-              if (!circleRef.current) return;
-              gsap.to(circleRef.current, {
-                r: targetR,
-                fill: targetFill,
-                stroke: targetStroke,
-                duration: 0.25,
-                ease: 'power2.out',
-              });
-            }, [targetR, targetFill, targetStroke]);
-
-            return (
-              <circle
-                key={index}
-                cx={x}
-                cy={y}
-                r={targetR}
-                fill={targetFill}
-                stroke={targetStroke}
-                style={{ cursor: 'pointer' }}
-                ref={circleRef}
-                onMouseEnter={() => setHoverIndex(index)}
-                onMouseLeave={() => setHoverIndex(null)}
-                onClick={() => {
-                  setHoverIndex(null);
-                  onChange(index);
-                }}
-              />
-            );
-          })}
-        </g>
-
+      {hover && hoverIndex !== null && hoverIndex !== activeIndex && (
         <g
           pointerEvents="none"
           transform={`
-            translate(${activeX} ${activeY})
-            rotate(${-rotation})
-            translate(${-activeX} ${-activeY})
-          `}
+              translate(${hover.x} ${hover.y})
+              rotate(${-rotation})
+              translate(${-hover.x} ${-hover.y})
+            `}
         >
           <text
-            ref={numberRef}
-            x={activeX}
-            y={activeY}
+            ref={hoverNumberRef}
+            x={hover.x}
+            y={hover.y}
             textAnchor="middle"
             dominantBaseline="middle"
             fontSize={20}
             fill="#42567A"
           >
-            {activeIndex + 1}
+            {hoverIndex + 1}
           </text>
         </g>
+      )}
 
-        {hoverIndex !== null && hoverIndex !== activeIndex && (
-          <g
-            pointerEvents="none"
-            transform={`
-              translate(${hoverX} ${hoverY})
-              rotate(${-rotation})
-              translate(${-hoverX} ${-hoverY})
-            `}
-          >
-            <text
-              ref={hoverNumberRef}
-              x={hoverX}
-              y={hoverY}
-              textAnchor="middle"
-              dominantBaseline="middle"
-              fontSize={20}
-              fill="#42567A"
-            >
-              {hoverIndex + 1}
-            </text>
-          </g>
-        )}
-
-        <g
-          pointerEvents="none"
-          transform={`
-            translate(${activeX} ${activeY})
+      <g
+        pointerEvents="none"
+        transform={`
+            translate(${active.x} ${active.y})
             rotate(${-rotation})
-            translate(${-activeX} ${-activeY})
+            translate(${-active.x} ${-active.y})
           `}
-        >
-          <foreignObject ref={titleRef} x={activeX + 36} y={activeY - 16} width={280} height={80}>
-            <div className={styles.svgTitle}>{ranges[activeIndex].title}</div>
-          </foreignObject>
-        </g>
-      </svg>
-    );
-  }
-);
-
-TimelineCircle.displayName = 'TimelineCircle';
+      >
+        <foreignObject ref={titleRef} x={active.x + 36} y={active.y - 16} width={280} height={80}>
+          <div className={styles.svgTitle}>{ranges[activeIndex].title}</div>
+        </foreignObject>
+      </g>
+    </svg>
+  );
+};

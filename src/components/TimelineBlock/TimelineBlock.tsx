@@ -75,23 +75,32 @@ export const TimelineBlock = ({ ranges }: Props) => {
   useEffect(() => {
     if (!circleRef.current) return;
 
-    gsap.to(circleRef.current, {
-      rotation: rotationRef.current,
-      duration: 0.8,
-      ease: 'power3.inOut',
-      transformOrigin: '50% 50%',
-      overwrite: 'auto',
-    });
+    const tweens: gsap.core.Tween[] = [];
+    tweens.push(
+      gsap.to(circleRef.current, {
+        rotation: rotationRef.current,
+        duration: 0.8,
+        ease: 'power3.inOut',
+        transformOrigin: '50% 50%',
+        overwrite: 'auto',
+      })
+    );
 
     if (fromRef.current && toRef.current) {
-      gsap.to([fromRef.current, toRef.current], {
-        scale: 1.03,
-        duration: 0.4,
-        yoyo: true,
-        repeat: 1,
-        ease: 'power2.out',
-      });
+      tweens.push(
+        gsap.to([fromRef.current, toRef.current], {
+          scale: 1.03,
+          duration: 0.4,
+          yoyo: true,
+          repeat: 1,
+          ease: 'power2.out',
+        })
+      );
     }
+
+    return () => {
+      tweens.forEach((t) => t.kill());
+    };
   }, [activeIndex]);
 
   useEffect(() => {
@@ -105,39 +114,44 @@ export const TimelineBlock = ({ ranges }: Props) => {
     const prevRange = ranges[prevIndex];
     const dir = directionRef.current === 'forward' ? 1 : -1;
 
-    gsap.fromTo(
-      fromRef.current,
-      { innerText: prevRange.from },
-      {
-        innerText: activeRange.from,
-        duration: 0.8,
-        ease: 'power2.out',
-        snap: { innerText: 1 },
-      }
-    );
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        fromRef.current,
+        { innerText: prevRange.from },
+        {
+          innerText: activeRange.from,
+          duration: 0.8,
+          ease: 'power2.out',
+          snap: { innerText: 1 },
+        }
+      );
 
-    gsap.fromTo(
-      toRef.current,
-      {
-        innerText: prevRange.to,
-        y: 20 * dir,
-        opacity: 0,
-      },
-      {
-        innerText: activeRange.to,
-        y: 0,
-        opacity: 1,
-        duration: 0.8,
-        ease: 'power3.out',
-        snap: { innerText: 1 },
-      }
-    );
+      gsap.fromTo(
+        toRef.current,
+        {
+          innerText: prevRange.to,
+          y: 20 * dir,
+          opacity: 0,
+        },
+        {
+          innerText: activeRange.to,
+          y: 0,
+          opacity: 1,
+          duration: 0.8,
+          ease: 'power3.out',
+          snap: { innerText: 1 },
+        }
+      );
+    });
+    return () => {
+      ctx.revert();
+    };
   }, [activeIndex, activeRange, ranges, total]);
 
   useEffect(() => {
     if (!numberRef.current || !titleRef.current) return;
 
-    gsap.fromTo(
+    const tween = gsap.fromTo(
       [numberRef.current, titleRef.current],
       { opacity: 0, y: -6 },
       {
@@ -148,6 +162,9 @@ export const TimelineBlock = ({ ranges }: Props) => {
         delay: 0.6,
       }
     );
+    return () => {
+      tween.kill();
+    };
   }, [activeIndex]);
 
   return (
