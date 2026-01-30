@@ -7,7 +7,7 @@ interface Props {
   ranges: { title: string }[];
   activeIndex: number;
   onChange: (index: number) => void;
-  circleRef?: React.Ref<SVGSVGElement>;
+  circleRef?: React.Ref<SVGSVGElement | null>;
   rotation: number;
   numberRef: React.RefObject<SVGTextElement | null>;
   titleRef: React.RefObject<SVGForeignObjectElement | null>;
@@ -108,7 +108,7 @@ export const TimelineCircle = ({
           textAnchor="middle"
           dominantBaseline="middle"
           fontSize={20}
-          fill="#42567A"
+          fill="var(--color-text)"
         >
           {activeIndex + 1}
         </text>
@@ -130,7 +130,7 @@ export const TimelineCircle = ({
             textAnchor="middle"
             dominantBaseline="middle"
             fontSize={20}
-            fill="#42567A"
+            fill="var(--color-text)"
           >
             {hoverIndex + 1}
           </text>

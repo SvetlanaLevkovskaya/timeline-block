@@ -23,8 +23,8 @@ export const TimelineDot = ({
   const ref = useRef<SVGCircleElement | null>(null);
 
   const targetR = isActive || isHover ? 28 : 3;
-  const targetFill = isActive || isHover ? '#F4F5F9' : '#42567A';
-  const targetStroke = isActive || isHover ? '#42567A' : 'none';
+  const targetFill = isActive || isHover ? '#F4F5F9' : 'var(--color-text)';
+  const targetStroke = isActive || isHover ? 'var(--color-text)' : 'none';
 
   useEffect(() => {
     if (!ref.current) return;

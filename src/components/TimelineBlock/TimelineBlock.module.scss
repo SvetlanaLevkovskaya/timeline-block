@@ -3,6 +3,8 @@
   --color-secondary: #ef5da8;
   --color-text: #42567a;
 
+  --color-bg-neutral: #f0f0f0;
+
   --font-accent: 'Bebas Neue', sans-serif;
   --timeline-offset: 170px;
   --circle-size: 680px;
@@ -129,7 +131,7 @@ $bp-mobile: 475px;
   height: 36px;
   border-radius: 50%;
   border: none;
-  background-color: #f0f0f0;
+  background-color: var(--color-bg-neutral);
   color: var(--color-text);
   font-size: 18px;
   display: flex;

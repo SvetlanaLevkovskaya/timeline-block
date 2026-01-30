@@ -16,15 +16,15 @@ export const TimelineBlock = ({ ranges }: Props) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const activeRange = ranges[activeIndex];
 
-  const circleRef = useRef<SVGSVGElement>(null);
+  const circleRef = useRef<SVGSVGElement | null>(null);
   const rotationRef = useRef(INITIAL_ROTATION);
   const directionRef = useRef<Direction>('forward');
   const isAnimatingRef = useRef(false);
 
-  const numberRef = useRef<SVGTextElement>(null);
-  const titleRef = useRef<SVGForeignObjectElement>(null);
-  const fromRef = useRef<HTMLSpanElement>(null);
-  const toRef = useRef<HTMLSpanElement>(null);
+  const numberRef = useRef<SVGTextElement | null>(null);
+  const titleRef = useRef<SVGForeignObjectElement | null>(null);
+  const fromRef = useRef<HTMLSpanElement | null>(null);
+  const toRef = useRef<HTMLSpanElement | null>(null);
 
   const total = ranges.length;
   const step = 360 / total;
