@@ -25,6 +25,8 @@ export const TimelineBlock = ({ ranges }: Props) => {
   const titleRef = useRef<SVGForeignObjectElement | null>(null);
   const fromRef = useRef<HTMLSpanElement | null>(null);
   const toRef = useRef<HTMLSpanElement | null>(null);
+  const fromRefMobile = useRef<HTMLSpanElement | null>(null);
+  const toRefMobile = useRef<HTMLSpanElement | null>(null);
 
   const total = ranges.length;
   const step = 360 / total;
@@ -104,7 +106,10 @@ export const TimelineBlock = ({ ranges }: Props) => {
   }, [activeIndex]);
 
   useEffect(() => {
-    if (!fromRef.current || !toRef.current) return;
+    const allFrom = [fromRef.current, fromRefMobile.current].filter(Boolean);
+    const allTo = [toRef.current, toRefMobile.current].filter(Boolean);
+
+    if (!allFrom.length || !allTo.length) return;
 
     const prevIndex =
       directionRef.current === 'forward'
@@ -116,7 +121,7 @@ export const TimelineBlock = ({ ranges }: Props) => {
 
     const ctx = gsap.context(() => {
       gsap.fromTo(
-        fromRef.current,
+        allFrom,
         { innerText: prevRange.from },
         {
           innerText: activeRange.from,
@@ -127,7 +132,7 @@ export const TimelineBlock = ({ ranges }: Props) => {
       );
 
       gsap.fromTo(
-        toRef.current,
+        allTo,
         {
           innerText: prevRange.to,
           y: 20 * dir,
@@ -196,6 +201,8 @@ export const TimelineBlock = ({ ranges }: Props) => {
           activeRange={activeRange}
           onPrev={prev}
           onNext={next}
+          fromRef={fromRefMobile}
+          toRef={toRefMobile}
         />
       </div>
     </section>

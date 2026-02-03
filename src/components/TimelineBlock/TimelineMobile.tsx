@@ -10,14 +10,24 @@ type Props = {
   activeRange: TimelineRange;
   onPrev: () => void;
   onNext: () => void;
+  fromRef: React.RefObject<HTMLSpanElement | null>;
+  toRef: React.RefObject<HTMLSpanElement | null>;
 };
 
-export const TimelineMobile = ({ activeIndex, total, activeRange, onPrev, onNext }: Props) => {
+export const TimelineMobile = ({
+  activeIndex,
+  total,
+  activeRange,
+  onPrev,
+  onNext,
+  fromRef,
+  toRef,
+}: Props) => {
   return (
     <div className={`${styles.mobileWrapper} ${styles.mobileOnly}`}>
       <div className={styles.yearsMobile}>
-        <span className={styles.from}>{activeRange.from}</span>
-        <span className={styles.to}>{activeRange.to}</span>
+        <span ref={fromRef} className={styles.from} />
+        <span ref={toRef} className={styles.to} />
       </div>
 
       <TimelineSlider events={activeRange.events} />
